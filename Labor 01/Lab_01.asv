@@ -77,7 +77,7 @@ tn=linspace(0,1,fs+1);
 sample=y(tn); %Abgetastete sin-Werte
 
 %Quantisierung
-N=3; %Bit 
+N=3; %Bit
 level=2^N;
 yq=quant(sample,level);
 
@@ -107,32 +107,66 @@ close all;
 f=500; % Hz
 
 A=1 ;% Amplitude
-t= [0 1]; % s
+
 y= @(t) A*sin(2*pi*f*t);
 
 %Abtastung
 fs=44100; %2 Abtastung
-tn=linspace(0,1,fs+1);
+tn=linspace(0,1,fs);
 sample=y(tn); %Abgetastete sin-Werte
 
 %Quantisierung
-N=3; %Bit 
+N=3; %Bit
 level=2^N;
 yq=quant(sample,level);
 
 %Fehler
 err=y(tn)-yq;
 
-
+%Ausgabe
 playblocking(audioplayer(sample,fs))
 playblocking(audioplayer(yq,fs))
-&
+% Error Ausgabe
 playblocking(audioplayer(err,fs))
 % Der Ton wird Verzerrt und es ist ein Rausche zu hören
 
+%% Vergleichsausgabe
+clear;
+close all;
+f=500; % Hz
 
+A=1 ;% Amplitude
+t= [0 1]; % s
+y= @(t) A*sin(2*pi*f*t); %Funktion
+
+%Abtastung
+fs=44100; % Abtastung
+tn=linspace(0,1,fs);
+sample=y(tn); %Abgetastete sin-Werte
+n=2;
+while n>1
+    %Quantisierung
+    level=2^(n-1);
+    z=quant(sample,level-1);
+    disp(["Sound mit",n-1,'Bit']);        
+    playblocking(audioplayer(z,fs))
+    n=n+1;
+    if n==16
+        for n=2:16
+            level=2^(n-1);
+            z=quant(sample,level-1);
+            %Fehler berechnen
+            err=y(tn)-z;
+            disp(['Error mit',n,'Bit']);
+            % Error Ausgabe
+            playblocking(audioplayer(err,fs))
+        end
+        break;
+    end
+
+end
 
 function y = quant(x,level)
-    y1=round(x*level);
-    y=y1/(level);
+y1=round(x*level);
+y=y1/(level);
 end
