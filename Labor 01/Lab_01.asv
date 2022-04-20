@@ -130,6 +130,10 @@ playblocking(audioplayer(yq,fs))
 playblocking(audioplayer(err,fs))
 % Der Ton wird Verzerrt und es ist ein Rausche zu hören
 
+% Die Grundfrequenz das Signales ist auch im Rauschen zu hören aufgrund des
+% mathematischen Signales des Sinus. Diese Frequenz schlägt auch auf das
+% Rauschen durch
+
 %% Vergleichsausgabe
 clear;
 close all;
@@ -148,7 +152,7 @@ while n>1
     %Quantisierung
     level=2^(n-1);
     z=quant(sample,level-1);
-    disp(["Sound mit",n-1,'Bit']);        
+    disp(["Sound mit",n-1,'Bit']);
     playblocking(audioplayer(z,fs))
     n=n+1;
     if n==16
@@ -157,7 +161,7 @@ while n>1
             z=quant(sample,level-1);
             %Fehler berechnen
             err=y(tn)-z;
-            disp(['Error mit',n,'Bit']);
+            disp(["Error mit",n-1,'Bit']);
             % Error Ausgabe
             playblocking(audioplayer(err,fs))
         end
